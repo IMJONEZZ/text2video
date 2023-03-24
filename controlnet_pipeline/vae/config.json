@@ -1,0 +1,31 @@
+{
+  "_class_name": "AutoencoderKL",
+  "_diffusers_version": "0.15.0.dev0",
+  "_name_or_path": "C:\\Users\\chris\\.cache\\huggingface\\hub\\models--runwayml--stable-diffusion-v1-5\\snapshots\\39593d5650112b4cc580433f6b0435385882d819\\vae",
+  "act_fn": "silu",
+  "block_out_channels": [
+    128,
+    256,
+    512,
+    512
+  ],
+  "down_block_types": [
+    "DownEncoderBlock2D",
+    "DownEncoderBlock2D",
+    "DownEncoderBlock2D",
+    "DownEncoderBlock2D"
+  ],
+  "in_channels": 3,
+  "latent_channels": 4,
+  "layers_per_block": 2,
+  "norm_num_groups": 32,
+  "out_channels": 3,
+  "sample_size": 512,
+  "scaling_factor": 0.18215,
+  "up_block_types": [
+    "UpDecoderBlock2D",
+    "UpDecoderBlock2D",
+    "UpDecoderBlock2D",
+    "UpDecoderBlock2D"
+  ]
+}
