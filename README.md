@@ -3,7 +3,7 @@ Text to Video pipeline + ControlNet Editing pipeline using HF StableDiffusion
 
 Quickstart guide:
 
-git clone git@github.com:IMJONEZZ/text2video.git
+git clone https://github.com/IMJONEZZ/text2video.git
 
 conda create -n txt2vid python=3.9
 
