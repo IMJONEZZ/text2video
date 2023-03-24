@@ -1,11 +1,11 @@
 import diffusers
 import transformers
 print(diffusers.__version__, transformers.__version__)
-# try:
-#     import xformers
-#     print(xformers.__version__)
-# except:
-#     print("xformers not installed correctly")
+try:
+    import xformers
+    print(xformers.__version__)
+except:
+    print("xformers not installed correctly")
     
 import torch
 print("torch imported")
@@ -22,19 +22,32 @@ print("cv2, PIL, and numpy imported")
 import imageio
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+
+from controlnet_aux import OpenposeDetector
+from pathlib import Path
+
 print("all imported")
+
+def dummy(images, **kwargs):
+    return images, False
 
 pipe = DiffusionPipeline.from_pretrained("./diffusion_pipeline/", torch_dtype=torch.float16, variant="fp16")
 pipe.scheduler = DPMSolverMultistepScheduler.from_config(pipe.scheduler.config)
 pipe.enable_model_cpu_offload()
 pipe.enable_vae_slicing()
+pipe.safety_checker = dummy
 print("pipeline created")
 
+controlnet = [
+    ControlNetModel.from_pretrained("lllyasviel/sd-controlnet-openpose", torch_dtype=torch.float16),
+    ControlNetModel.from_pretrained("lllyasviel/sd-controlnet-canny", torch_dtype=torch.float16),
+]
 controlpipe = StableDiffusionControlNetPipeline.from_pretrained(
-    "./controlnet_pipeline", torch_dtype=torch.float16
+    "runwayml/stable-diffusion-v1-5", controlnet=controlnet, torch_dtype=torch.float16
 )
 controlpipe.scheduler = UniPCMultistepScheduler.from_config(controlpipe.scheduler.config)
 controlpipe.enable_model_cpu_offload()
+controlpipe.safety_checker = dummy
 #controlpipe.enable_xformers_memory_efficient_attention()
 print("controlnet pipeline created")
 
@@ -61,8 +74,10 @@ def display_video(video):
     plt.close()
     return anime
 video = imageio.mimread(video_path)  #Loading video
-print("video loaded")
-print(video)
+writer = imageio.get_writer('./videov1.mp4', fps=10)
+for frame in video:
+    writer.append_data(frame)
+writer.close()
 
 for i in range(len(video_frames)):
     image = np.array(video_frames[i])
@@ -75,16 +90,25 @@ for i in range(len(video_frames)):
     image = np.concatenate([image, image, image], axis=2)
     canny_image = Image.fromarray(image)
     #canny_image.show()
+    openpose = OpenposeDetector.from_pretrained("lllyasviel/ControlNet")
+    openpose_image = openpose(video_frames[i])
     
+    images = [openpose_image, canny_image]
     output = controlpipe(
-        prompt,
-        canny_image,
+        'Russel Brand dancing on the SNL stage, best quality, masterpiece, photorealistic, unreal engine 5',
+        images,
         negative_prompt=negative_prompt,
         generator=torch.Generator(device='cpu'),
         num_inference_steps=20,
     )
-    video_frames[i] = output
+    output.images[0].save(f'./temp_imgs/controlnet-{i}.png')
 print("controlnet video created")
     
-video_path = export_to_video(video_frames)
-video = imageio.mimread(video_path)  #Loading video
+writer = imageio.get_writer('./videov2.mp4', fps=10)
+
+for file in Path("./temp_imgs/").iterdir():
+    if not file.is_file():
+        continue
+    im = imageio.imread(file)
+    writer.append_data(im)
+writer.close()
