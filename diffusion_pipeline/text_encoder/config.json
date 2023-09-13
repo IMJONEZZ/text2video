@@ -1,5 +1,5 @@
 {
-  "_name_or_path": "./diffusion_pipeline/text_encoder",
+  "_name_or_path": "C:\\Users\\chris\\.cache\\huggingface\\hub\\models--damo-vilab--text-to-video-ms-1.7b\\snapshots\\338683c3175cde59b407a699af8fe68f4a2b8f74\\text_encoder",
   "architectures": [
     "CLIPTextModel"
   ],
@@ -20,6 +20,6 @@
   "pad_token_id": 1,
   "projection_dim": 512,
   "torch_dtype": "float16",
-  "transformers_version": "4.27.3",
+  "transformers_version": "4.33.1",
   "vocab_size": 49408
 }

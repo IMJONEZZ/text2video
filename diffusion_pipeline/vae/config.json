@@ -1,7 +1,7 @@
 {
   "_class_name": "AutoencoderKL",
   "_diffusers_version": "0.15.0.dev0",
-  "_name_or_path": "./diffusion_pipeline/vae",
+  "_name_or_path": "C:\\Users\\chris\\.cache\\huggingface\\hub\\models--damo-vilab--text-to-video-ms-1.7b\\snapshots\\338683c3175cde59b407a699af8fe68f4a2b8f74\\vae",
   "act_fn": "silu",
   "block_out_channels": [
     128,
